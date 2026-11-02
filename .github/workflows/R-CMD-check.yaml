@@ -24,6 +24,7 @@ jobs:
         run: |
           R CMD INSTALL .
           Rscript inst/examples/arabic.R
+          Rscript inst/examples/iris.R
       - uses: actions/upload-artifact@v4
         with:
           name: arabic-renderings
