@@ -1,0 +1,30 @@
+name: Promote existing release
+on:
+  push:
+    branches: [main]
+    paths: [.github/release-promotion-tag]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to mark as a regular release
+        required: true
+        default: v0.1.0-alpha.1
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Promote existing release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          INPUT_TAG: ${{ inputs.tag }}
+        shell: bash
+        run: |
+          tag="${INPUT_TAG:-$(cat .github/release-promotion-tag)}"
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-alpha\.[0-9]+)?$ ]]
+          gh release view "$tag"
+          gh release edit "$tag" --prerelease=false
+          test "$(gh release view "$tag" --json isPrerelease --jq '.isPrerelease')" = false
