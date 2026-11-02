@@ -1,0 +1,5 @@
+*.Rcheck/
+*.tar.gz
+arabic-output/
+.Rhistory
+.RData

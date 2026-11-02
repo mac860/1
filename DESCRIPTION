@@ -1,0 +1,13 @@
+Package: arabicR
+Type: Package
+Title: Arabic Text and Right-to-Left Graphics
+Version: 0.1.0.9000
+Authors@R: person("Mac OS", role = c("aut", "cre"), email = "mac@wael.tk")
+Description: Helpers for rendering Arabic Unicode text with connected letters,
+    right alignment, and suitable fonts. Provides ragg and Cairo graphics
+    devices, font checks, grid text, and optional ggplot2 theme support.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Imports: grDevices, grid, utils, systemfonts (>= 1.3.1)
+Suggests: ragg (>= 1.4.0), textshaping (>= 1.0.5), ggplot2
