@@ -3,6 +3,8 @@ on:
   push:
     tags:
       - 'v*-alpha.*'
+    branches: [main]
+    paths: [.github/alpha-release-tag]
   workflow_dispatch:
     inputs:
       tag:
@@ -14,13 +16,22 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    env:
-      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
     steps:
-      - name: Validate alpha tag
+      - uses: actions/checkout@v4
+      - name: Select and validate alpha tag
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
         shell: bash
         run: |
-          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-alpha\.[0-9]+$ ]]
+          if [[ -n "$INPUT_TAG" ]]; then
+            tag="$INPUT_TAG"
+          elif [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            tag="$GITHUB_REF_NAME"
+          else
+            tag="$(cat .github/alpha-release-tag)"
+          fi
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-alpha\.[0-9]+$ ]]
+          echo "RELEASE_TAG=$tag" >> "$GITHUB_ENV"
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.RELEASE_TAG }}
